@@ -160,15 +160,15 @@ export default function FancyTable() {
           </div>
 
           <div className="overflow-x-auto max-h-[75vh] border rounded-lg shadow">
-            <table className="min-w-max border-separate border-spacing-y-2 text-sm">
-              <thead className="sticky top-0 bg-cyan-800 text-white text-sm">
+            <table className="w-full table-fixed border-separate border-spacing-y-1 text-sm">
+              <thead className="sticky top-0 bg-blue-800 text-white text-sm">
                 <tr>
-                  <th className="px-2 py-2 text-left w-[130px]">Waktu</th>
-                  <th className="px-2 py-2 text-left w-[200px]">Nomor</th>
-                  <th className="px-2 py-2 text-left w-[80px]">Jenis</th>
-                  <th className="px-2 py-2 text-left w-[180px]">Isi Pesan</th>
-                  <th className="px-2 py-2 text-left w-[220px]">Gambar</th>
-                  <th className="px-2 py-2 text-left w-[100px]">Actions</th>
+                  <th className="px-2 py-2 text-left w-[120px] ">Waktu</th>
+                  <th className="px-2 py-2 text-left w-[120px]">Nomor</th>
+                  <th className="px-2 py-2 text-left w-[50px]">Jenis</th>
+                  <th className="px-2 py-2 text-left w-[250px]  ">Isi Pesan</th>
+                  <th className="px-2 py-2 text-left w-[140px]">Gambar</th>
+                  <th className="px-2 py-2 text-left w-[100px] ">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,7 +177,7 @@ export default function FancyTable() {
                     <td className="px-2 py-2">{row.Waktu}</td>
                     <td className="px-2 py-2">{row.Nomor}</td>
                     <td className="px-2 py-2">{row.Jenis}</td>
-                    <td className="px-2 py-2" title={row["Isi Pesan"]}>{row["Isi Pesan"]}</td>
+                    <td className="px-2 py-2 " title={row["Isi Pesan"]}>{row["Isi Pesan"]}</td>
                     <td className="px-2 py-2 break-all">
                       {row.Url ? (
                         <a href={row.Url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">{row.Url}</a>
