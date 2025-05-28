@@ -1,4 +1,4 @@
-// vite.config.js
-export default {
-  // kosongkan jika tidak perlu proxy
-};
+export default defineConfig({
+  base: '/',
+  // konfigurasi lainnya
+});
