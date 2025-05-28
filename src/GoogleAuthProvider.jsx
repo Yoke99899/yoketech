@@ -21,9 +21,14 @@ export const GoogleAuthProvider = ({ children }) => {
   useEffect(() => {
     const initializeGapi = () => {
       gapi.load("client", async () => {
-        await gapi.client.init({});
+        try {
+          await gapi.client.init({});
+        } catch (err) {
+          console.error("GAPI client init error:", err);
+        }
       });
 
+      // Pastikan window.google tersedia
       if (
         !window.google ||
         !window.google.accounts ||
@@ -38,14 +43,18 @@ export const GoogleAuthProvider = ({ children }) => {
         scope: SCOPES,
         callback: (tokenResponse) => {
           if (tokenResponse?.access_token) {
+            console.log("Access token received:", tokenResponse);
             setAccessToken(tokenResponse.access_token);
             localStorage.setItem("accessToken", tokenResponse.access_token);
 
+            // Atur timer refresh
             if (refreshTimer) clearTimeout(refreshTimer);
             const timer = setTimeout(() => {
               client.requestAccessToken();
             }, 50 * 60 * 1000); // refresh tiap 50 menit
             setRefreshTimer(timer);
+          } else {
+            console.error("Token response missing access_token:", tokenResponse);
           }
         },
       });
@@ -87,7 +96,11 @@ export const GoogleAuthProvider = ({ children }) => {
   }, [refreshTimer]);
 
   const login = useCallback(() => {
-    if (tokenClient) tokenClient.requestAccessToken();
+    if (tokenClient) {
+      tokenClient.requestAccessToken();
+    } else {
+      console.error("Token client not initialized yet.");
+    }
   }, [tokenClient]);
 
   const logout = useCallback(() => {
