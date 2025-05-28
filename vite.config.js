@@ -1,8 +1,4 @@
 // vite.config.js
 export default {
-  server: {
-    proxy: {
-      "/api": "http://localhost:3000",
-    },
-  },
+  // kosongkan jika tidak perlu proxy
 };
