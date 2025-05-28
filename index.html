@@ -17,6 +17,16 @@
     });
   }
 	  </script>
+
+	  <script>
+  window.addEventListener("error", () => {
+    const isBlank = document.body.innerText.trim() === "";
+    if (isBlank && !sessionStorage.getItem("reloaded")) {
+      sessionStorage.setItem("reloaded", "true");
+      location.reload(true);
+    }
+  });
+	  </script>
   </head>
   <body>
     <div id="root"></div>
