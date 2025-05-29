@@ -11,7 +11,7 @@ import FancyTable from "./pages/FancyTable";
 import LoginPage from "./pages/LoginPage";
 
 import { GoogleAuthProvider, AuthContext } from "./GoogleAuthProvider";
-import ErrorBoundary from "./components/ErrorBoundary";
+// import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
 
 // Middleware untuk mengecek otentikasi
