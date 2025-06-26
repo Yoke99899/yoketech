@@ -1,77 +1,99 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState } from "react";
+import { ref, onValue, set } from "../firebaseClient";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../GoogleAuthProvider";
-import logo from "../assets/sadata-logo.png";
-import backgroundIllustration from "../assets/illustration.png";
-import { LogIn } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function LoginPage() {
-  const { accessToken, login } = useContext(AuthContext);
+  const [isRegister, setIsRegister] = useState(false);
+  const [form, setForm] = useState({
+    email: "", password: "", name: "", role: "User"
+  });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Auto-redirect if already authenticated
-  useEffect(() => {
-    if (accessToken) {
-      navigate("/", { replace: true });
-    }
-  }, [accessToken, navigate]);
+  const handleChange = (key, val) => {
+    setForm({ ...form, [key]: val });
+  };
 
   const handleLogin = () => {
-    if (login) {
-      login();
-    } else {
-      console.error("Login function not available");
+    const userRef = ref(window.firebaseDB, "user_data");
+    onValue(userRef, (snapshot) => {
+      const data = snapshot.val() || {};
+      const users = Object.values(data);
+      const found = users.find(u => u.email === form.email && u.password === form.password);
+      if (found) {
+        localStorage.setItem("currentUser", JSON.stringify(found));
+        navigate("/");
+      } else {
+        setError("Email atau password salah!");
+      }
+    }, { onlyOnce: true });
+  };
+
+  const handleRegister = async () => {
+    if (!form.email || !form.password || !form.name) {
+      setError("Isi semua data terlebih dahulu");
+      return;
     }
+    const id = Date.now().toString();
+    await set(ref(window.firebaseDB, `user_data/${id}`), { id, ...form });
+    alert("✅ Berhasil daftar. Silakan login.");
+    setIsRegister(false);
+    setForm({ email: "", password: "", name: "", role: "User" });
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-50 via-white to-blue-100"
-    >
-      <div className="flex flex-col-reverse md:flex-row w-full max-w-6xl shadow-2xl rounded-2xl overflow-hidden bg-white/70 border border-gray-200 backdrop-blur-lg">
-
-        {/* Left Side - Form */}
-        <div className="w-full md:w-1/2 p-10 flex flex-col justify-center bg-white/80">
-          <div className="flex items-center gap-3 mb-8">
-            <img
-              src={logo}
-              alt="SADATA Logo"
-              className="w-12 h-12 drop-shadow transition-transform duration-500 hover:scale-110 hover:rotate-6"
-            />
-            <h1 className="text-3xl font-bold text-gray-800 tracking-wide">SADATA</h1>
-          </div>
-
-          <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-            Selamat datang! Silakan masuk dengan akun Google Anda untuk mengakses dashboard SADATA.
-          </p>
-
-          <button
-            onClick={handleLogin}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-semibold py-3 rounded-xl shadow-md transition-all duration-200"
-          >
-            <LogIn className="w-5 h-5" />
-            SIGN IN with Google
-          </button>
-
-          <footer className="mt-10 text-center text-xs text-gray-400">
-            &copy; <a href="https://sada.co.id" className="text-blue-600 hover:underline">SADA TECHNOLOGY</a> 2019 - 2025
-          </footer>
-        </div>
-
-        {/* Right Side - Illustration */}
-        <div className="w-full md:w-1/2 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-          <img
-            src={backgroundIllustration}
-            alt="Login Illustration"
-            className="object-contain max-h-[90vh] w-full p-6 md:p-10 transition-all duration-500 ease-in-out"
-            loading="lazy"
+    <div className="min-h-screen bg-[#800000] flex items-center justify-center px-4">
+      <div className="bg-white max-w-md w-full p-6 rounded shadow-md space-y-4">
+        <h2 className="text-xl font-bold text-center text-[#800000]">
+          {isRegister ? "Daftar Pengguna Baru" : "Login ke Sistem"}
+        </h2>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        {isRegister && (
+          <input
+            className="w-full border px-3 py-2 rounded"
+            placeholder="Nama Lengkap"
+            value={form.name}
+            onChange={(e) => handleChange("name", e.target.value)}
           />
-        </div>
+        )}
+        <input
+          className="w-full border px-3 py-2 rounded"
+          placeholder="Email"
+          type="email"
+          value={form.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+        />
+        <input
+          className="w-full border px-3 py-2 rounded"
+          placeholder="Password"
+          type="password"
+          value={form.password}
+          onChange={(e) => handleChange("password", e.target.value)}
+        />
+        {isRegister && (
+          <select
+            className="w-full border px-3 py-2 rounded"
+            value={form.role}
+            onChange={(e) => handleChange("role", e.target.value)}
+          >
+            <option value="User">User</option>
+            <option value="Admin">Admin</option>
+            <option value="Master Admin">Master Admin</option>
+          </select>
+        )}
+        <button
+          className="w-full bg-[#800000] text-white py-2 rounded hover:opacity-90"
+          onClick={isRegister ? handleRegister : handleLogin}
+        >
+          {isRegister ? "Daftar Sekarang" : "Login"}
+        </button>
+        <p className="text-center text-sm">
+          {isRegister ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
+          <button className="text-blue-600 underline" onClick={() => { setIsRegister(!isRegister); setError(""); }}>
+            {isRegister ? "Login di sini" : "Daftar di sini"}
+          </button>
+        </p>
       </div>
-    </motion.div>
+    </div>
   );
 }
