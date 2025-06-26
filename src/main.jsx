@@ -1,179 +1,193 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, Table, MessageCircle, LogOut, Menu } from "lucide-react";
+import {
+  UserCircle,
+  LogOut,
+  Menu,
+  ChevronDown
+} from "lucide-react";
 
-import DashboardSellout from "./pages/DashboardSellout";
-import SelloutTable from "./pages/SelloutTable";
-import Data2Table from "./pages/Data2Table";
-import FancyTable from "./pages/FancyTable";
+import UserPage from "./pages/UserPage";
+import EmployeePage from "./pages/EmployeePage";
 import LoginPage from "./pages/LoginPage";
+import DatabaseDona from './pages/DatabaseDona';
 
-import { GoogleAuthProvider, AuthContext } from "./GoogleAuthProvider";
-// import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
 
-// Middleware untuk mengecek otentikasi
-const RequireAuth = ({ children }) => {
-  const { accessToken } = useContext(AuthContext);
-  return accessToken ? children : <Navigate to="/login" replace />;
-};
-
-// Komponen utama aplikasi
 const App = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const sidebarRef = useRef();
-
-  // Menutup sidebar ketika klik di luar
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setSidebarOpen(false);
-      }
-    };
-    if (sidebarOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [sidebarOpen]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   return (
-    <GoogleAuthProvider>
-      <BrowserRouter>
-        <div className="flex h-screen">
-          <AnimatePresence>
-            {sidebarOpen && (
-              <>
-                {/* Overlay */}
-                <motion.div
-                  key="overlay"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => setSidebarOpen(false)}
-                  className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
-                  style={{ WebkitBackdropFilter: "blur(6px)" }}
-                />
+    <BrowserRouter>
+      <div className="flex h-screen bg-gray-100 text-gray-900">
+        <motion.div
+          key="sidebar"
+          initial={{ width: 0 }}
+          animate={{ width: sidebarCollapsed ? 64 : 256 }}
+          exit={{ width: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="fixed inset-y-0 left-0 z-50 bg-gradient-to-br from-[#800000] to-red-800 text-white shadow-2xl overflow-hidden"
+        >
+          <Sidebar
+            collapsed={sidebarCollapsed}
+            setCollapsed={setSidebarCollapsed}
+          />
+        </motion.div>
 
-                {/* Sidebar */}
-                <motion.div
-                  key="sidebar"
-                  ref={sidebarRef}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "100%" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  drag="y"
-                  dragConstraints={{ top: 0, bottom: 100 }}
-                  onDragEnd={(e, info) => {
-                    if (info.offset.y > 80) setSidebarOpen(false);
-                  }}
-                  className="fixed bottom-0 left-0 right-0 z-50 w-full md:top-0 md:bottom-0 md:w-64 md:h-full bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white shadow-2xl md:rounded-tr-2xl md:rounded-tl-2xl border-t border-blue-700"
-                >
-                  <Sidebar setSidebarOpen={setSidebarOpen} />
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
-          <MainContent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        </div>
-      </BrowserRouter>
-    </GoogleAuthProvider>
+        <MainContent sidebarCollapsed={sidebarCollapsed} />
+      </div>
+    </BrowserRouter>
   );
 };
 
-// Komponen Sidebar
-const Sidebar = ({ setSidebarOpen }) => {
-  const { accessToken, logout, user } = useContext(AuthContext);
+const RequireAuth = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (!user) {
+    window.location.href = "/login";
+    return null;
+  }
+  return children;
+};
+
+const Sidebar = ({ collapsed, setCollapsed }) => {
+  const [openMenus, setOpenMenus] = useState({ masterData: true });
+
+  const toggleMenu = (menu) => {
+    setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
+  };
 
   return (
-    <div className="p-6 flex flex-col h-full">
-      {/* Tombol tutup sidebar */}
-      <div className="flex justify-end mb-4">
-        <button onClick={() => setSidebarOpen(false)} className="w-8 h-8 relative group focus:outline-none">
-          <span className="sr-only">Close</span>
-          <span className="absolute block w-6 h-0.5 bg-white transform rotate-45 group-hover:rotate-90 transition duration-300"></span>
-          <span className="absolute block w-6 h-0.5 bg-white transform -rotate-45 group-hover:-rotate-90 transition duration-300"></span>
-        </button>
-      </div>
+    <div className="p-3 flex flex-col h-full overflow-y-auto space-y-2">
+      {/* Tombol toggle */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="text-white p-2 rounded hover:bg-red-700 transition mx-auto"
+      >
+        <Menu />
+      </button>
 
-      {/* Info Pengguna */}
-      <div className="flex flex-col items-center text-center mb-6">
-        {user && (
-          <>
-            <img
-              src={user.picture}
-              alt="Profile"
-              className="w-20 h-20 rounded-full border-2 border-white shadow-lg mb-2"
-            />
-            <p className="text-sm font-semibold">{user.name}</p>
-            <p className="text-xs text-blue-200">{user.email}</p>
-          </>
-        )}
-      </div>
-
-      {/* Navigasi */}
-      <nav className="w-full space-y-2 text-sm">
-        <Link to="/" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 shadow-md">
-          <LayoutDashboard className="w-5 h-5 text-cyan-300" />
-          <span>Dashboard Sellout</span>
-        </Link>
-        <Link to="/sellout2" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 shadow-md">
-          <Table className="w-5 h-5 text-cyan-300" />
-          <span>Sell Out Table</span>
-        </Link>
-        <Link to="/inbox" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 shadow-md">
-          <MessageCircle className="w-5 h-5 text-cyan-300" />
-          <span>Pesan WhatsApp</span>
-        </Link>
-      </nav>
-
-      {/* Logout */}
-      {accessToken && (
+      {/* Menu utama */}
+      <nav className="space-y-2 mt-6">
         <button
-          onClick={() => {
-            logout();
-            setSidebarOpen(false);
-          }}
-          className="mt-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-4 py-2 rounded text-sm w-full shadow-md transition flex items-center justify-center gap-2"
+          onClick={() => toggleMenu("masterData")}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 w-full ${
+            collapsed ? "justify-center" : ""
+          }`}
         >
-          <LogOut className="w-4 h-4" />
-          Log Out
+          <i className="fas fa-database" />
+          {!collapsed && <span>Master Data</span>}
         </button>
-      )}
+
+        {openMenus.masterData && (
+          <div className={`space-y-1 ${collapsed ? "pl-0" : "pl-4"}`}>
+            <Link
+              to="/"
+              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <UserCircle className="w-5 h-5" />
+              {!collapsed && <span>User Management</span>}
+            </Link>
+            <Link
+              to="/employees"
+              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <UserCircle className="w-5 h-5" />
+              {!collapsed && <span>Employee Management</span>}
+            </Link>
+               <Link
+              to="/dona"
+              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <UserCircle className="w-5 h-5" />
+              {!collapsed && <span>Database Dona</span>}
+            </Link>
+          </div>
+        )}
+      </nav>
     </div>
   );
 };
 
-// Komponen konten utama
-const MainContent = ({ sidebarOpen, setSidebarOpen }) => (
-  <main className="flex-1 overflow-y-auto bg-gray-50 relative">
-    {!sidebarOpen && (
-      <button
-        onClick={() => setSidebarOpen(true)}
-        className="p-2 m-2 bg-white text-gray-800 rounded-full shadow-lg fixed top-4 left-3 z-50 border border-gray-200 hover:bg-gray-100 transition"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
-    )}
+const TopBar = () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const [showDropdown, setShowDropdown] = useState(false);
 
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<RequireAuth><DashboardSellout /></RequireAuth>} />
-      <Route path="/sellout2" element={<RequireAuth><SelloutTable /></RequireAuth>} />
-      <Route path="/data2" element={<RequireAuth><Data2Table /></RequireAuth>} />
-      <Route path="/inbox" element={<RequireAuth><FancyTable /></RequireAuth>} />
-    </Routes>
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    window.location.href = "/login";
+  };
+
+  return (
+    <div className="w-full bg-red-800 text-white px-4 py-3 flex justify-end items-center shadow-md z-30 relative">
+      <div className="relative">
+        <button
+          onClick={() => setShowDropdown(!showDropdown)}
+          className="flex items-center gap-2 font-semibold hover:text-gray-200"
+        >
+          <UserCircle className="w-5 h-5" />
+          {currentUser?.name?.toUpperCase() || "USER"}
+          <ChevronDown className="w-4 h-4" />
+        </button>
+
+        {showDropdown && (
+          <div className="absolute right-0 mt-2 w-40 bg-white text-black shadow rounded z-50">
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full gap-2 px-4 py-2 hover:bg-gray-100 text-sm"
+            >
+              <LogOut className="w-4 h-4" />
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const MainContent = ({ sidebarCollapsed }) => (
+  <main
+    className={`flex-1 overflow-y-auto bg-white relative transition-all duration-300 ${
+      sidebarCollapsed ? "ml-16" : "ml-64"
+    }`}
+  >
+    <TopBar />
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+     <Routes>
+  <Route path="/login" element={<LoginPage />} />
+  <Route
+    path="/"
+    element={
+      <RequireAuth>
+        <UserPage />
+      </RequireAuth>
+    }
+  />
+  <Route
+    path="/employees"
+    element={
+      <RequireAuth>
+        <EmployeePage />
+      </RequireAuth>
+    }
+  />
+  
+<Route path="/dona" element={<DatabaseDona />} />
+  </Routes>
+    </motion.div>
   </main>
 );
 
-// Render aplikasi ke DOM
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
