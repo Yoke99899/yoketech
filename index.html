@@ -2,33 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bot WhatsApp Dashboard</title>
+    <title>Yoke App</title>
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
-	  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (const reg of registrations) {
-          reg.unregister();
-        }
-      });
-    });
-  }
-	  </script>
-
-	  <script>
-  window.addEventListener("error", () => {
-    const isBlank = document.body.innerText.trim() === "";
-    if (isBlank && !sessionStorage.getItem("reloaded")) {
-      sessionStorage.setItem("reloaded", "true");
-      location.reload(true);
-    }
-  });
-	  </script>
-
-	  <script src="https://accounts.google.com/gsi/client" async defer></script>
   </head>
   <body>
     <div id="root"></div>
