@@ -90,7 +90,7 @@ export default function DatabaseOutlet() {
       {/* Table */}
       <div className="overflow-auto max-h-[70vh] border rounded">
         <table className="min-w-full text-xs">
-          <thead className="bg-gray-800 text-white sticky top-0 z-10">
+          <thead className="bg-gray-800 text-white sticky top-0 z-50">
             <tr>
               <th className="p-2 text-left sticky left-0 bg-gray-800 z-20">AKSI</th>
               {visibleKeys.map((key) => (
