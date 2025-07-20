@@ -30,7 +30,7 @@ const App = () => {
           animate={{ width: sidebarCollapsed ? 64 : 256 }}
           exit={{ width: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed inset-y-0 left-0 z-50 bg-gradient-to-br from-[#800000] to-red-800 text-white shadow-2xl overflow-hidden"
+	className="fixed inset-y-0 left-0 z-50 bg-gradient-to-b from-[#7b0f0f] to-[#a31616] text-white shadow-lg flex flex-col overflow-hidden"
         >
           <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         </motion.div>
@@ -123,7 +123,8 @@ const TopBar = () => {
   };
 
   return (
-    <div className="w-full bg-red-800 text-white px-4 py-3 flex justify-end items-center shadow-md z-30 relative">
+   <div className="w-full bg-gradient-to-r from-[#ff007a] to-[#007bff] text-white px-4 py-3 flex justify-end items-center shadow-md z-30 relative">
+
       <div className="relative">
         <button
           onClick={() => setShowDropdown(!showDropdown)}
