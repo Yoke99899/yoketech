@@ -12,9 +12,9 @@ import {
 import UserPage from "./pages/UserPage";
 import EmployeePage from "./pages/EmployeePage";
 import LoginPage from "./pages/LoginPage";
-import DatabaseDona from './pages/DatabaseDona';
-import DatabaseOutlet from './pages/DatabaseOutlet';
-import DatabaseProductivity from './pages/DatabaseProductivity'; // ✅ BARU
+import DatabaseDona from "./pages/DatabaseDona";
+import DatabaseOutlet from "./pages/DatabaseOutlet";
+import DatabaseProductivity from "./pages/DatabaseProductivity";
 
 import "./index.css";
 
@@ -24,17 +24,31 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="flex h-screen bg-gray-100 text-gray-900">
-        <motion.div
-          key="sidebar"
-          initial={{ width: 0 }}
-          animate={{ width: sidebarCollapsed ? 64 : 256 }}
-          exit={{ width: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-	className="fixed inset-y-0 left-0 z-50 bg-gradient-to-b from-[#7b0f0f] to-[#a31616] text-white shadow-lg flex flex-col overflow-hidden"
-        >
-          <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
-        </motion.div>
+        {/* Sidebar */}
+        {!sidebarCollapsed && (
+          <motion.div
+            key="sidebar"
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-[#7b0f0f] to-[#a31616] text-white shadow-lg flex flex-col overflow-hidden"
+          >
+            <Sidebar collapsed={false} setCollapsed={setSidebarCollapsed} />
+          </motion.div>
+        )}
 
+        {/* Sidebar Toggle Button */}
+        {sidebarCollapsed && (
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-full shadow"
+          >
+            <Menu />
+          </button>
+        )}
+
+        {/* Main content */}
         <MainContent sidebarCollapsed={sidebarCollapsed} />
       </div>
     </BrowserRouter>
@@ -50,10 +64,10 @@ const RequireAuth = ({ children }) => {
   return children;
 };
 
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ setCollapsed }) => {
   const [openMenus, setOpenMenus] = useState({ masterData: true });
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const isMaster = currentUser?.role === "master";
+  const isMaster = ["master", "admin", "Master Admin"].includes(currentUser?.role);
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
@@ -62,7 +76,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   return (
     <div className="p-3 flex flex-col h-full overflow-y-auto space-y-2">
       <button
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => setCollapsed(true)}
         className="text-white p-2 rounded hover:bg-red-700 transition mx-auto"
       >
         <Menu />
@@ -73,31 +87,29 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           <>
             <button
               onClick={() => toggleMenu("masterData")}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 w-full ${
-                collapsed ? "justify-center" : ""
-              }`}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 w-full"
             >
               <i className="fas fa-database" />
-              {!collapsed && <span>Master Data</span>}
+              <span>Master Data</span>
             </button>
 
             {openMenus.masterData && (
-              <div className={`space-y-1 ${collapsed ? "pl-0" : "pl-4"}`}>
+              <div className="space-y-1 pl-4">
                 <Link to="/" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
                   <UserCircle className="w-5 h-5" />
-                  {!collapsed && <span>User Management</span>}
+                  <span>User Management</span>
                 </Link>
                 <Link to="/employees" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
                   <UserCircle className="w-5 h-5" />
-                  {!collapsed && <span>Employee Management</span>}
+                  <span>Employee Management</span>
                 </Link>
                 <Link to="/dona" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
                   <UserCircle className="w-5 h-5" />
-                  {!collapsed && <span>Database Dona</span>}
+                  <span>Database Dona</span>
                 </Link>
                 <Link to="/outlet" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
                   <UserCircle className="w-5 h-5" />
-                  {!collapsed && <span>Database Outlet</span>}
+                  <span>Database Outlet</span>
                 </Link>
               </div>
             )}
@@ -106,7 +118,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
         <Link to="/productivity" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-700">
           <UserCircle className="w-5 h-5" />
-          {!collapsed && <span>Database Productivity</span>}
+          <span>Database Productivity</span>
         </Link>
       </nav>
     </div>
@@ -123,8 +135,7 @@ const TopBar = () => {
   };
 
   return (
-   <div className="w-full bg-gradient-to-r from-[#ff007a] to-[#007bff] text-white px-4 py-3 flex justify-end items-center shadow-md z-30 relative">
-
+    <div className="w-full bg-gradient-to-r from-[#ff007a] to-[#007bff] text-white px-4 py-3 flex justify-end items-center shadow-md z-30 relative">
       <div className="relative">
         <button
           onClick={() => setShowDropdown(!showDropdown)}
@@ -154,7 +165,7 @@ const TopBar = () => {
 const MainContent = ({ sidebarCollapsed }) => (
   <main
     className={`flex-1 overflow-y-auto bg-white relative transition-all duration-300 ${
-      sidebarCollapsed ? "ml-16" : "ml-64"
+      sidebarCollapsed ? "ml-0" : "ml-64"
     }`}
   >
     <TopBar />
@@ -165,11 +176,11 @@ const MainContent = ({ sidebarCollapsed }) => (
     >
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<RequireAuth><DatabaseProductivity/></RequireAuth>} />
+        <Route path="/" element={<RequireAuth><DatabaseProductivity /></RequireAuth>} />
         <Route path="/employees" element={<RequireAuth><EmployeePage /></RequireAuth>} />
         <Route path="/dona" element={<RequireAuth><DatabaseDona /></RequireAuth>} />
         <Route path="/outlet" element={<RequireAuth><DatabaseOutlet /></RequireAuth>} />
-        <Route path="/productivity" element={<RequireAuth><DatabaseProductivity /></RequireAuth>} /> {/* ✅ BARU */}
+        <Route path="/productivity" element={<RequireAuth><DatabaseProductivity /></RequireAuth>} />
       </Routes>
     </motion.div>
   </main>
