@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { db, ref, push, update, remove, onValue } from "../firebaseClient";
 import DatePicker from "react-datepicker";
@@ -121,9 +122,9 @@ export default function ProductivityPage() {
   return (
     <div className="p-4 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-[#800000]">Data Productivity</h2>
+        <h2 className="text-xl font-bold text-gray-800">Data Productivity</h2>
         <button
-          className="bg-[#800000] text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white px-4 py-2 rounded"
           onClick={() => setShowForm(true)}
         >
           <FaPlus className="inline mr-2" /> Tambah Data
@@ -132,7 +133,7 @@ export default function ProductivityPage() {
 
       <div className="overflow-auto border rounded shadow">
         <table className="min-w-full text-sm">
-          <thead className="bg-[#800000] text-white">
+          <thead className="bg-gray-800 text-white sticky top-0 z-10">
             <tr>
               <th className="p-2">Aksi</th>
               <th className="p-2">Nama</th>
