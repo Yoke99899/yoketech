@@ -62,7 +62,7 @@ export default function DatabaseOutlet() {
       {/* Toggle Filter */}
       <button
         onClick={() => setShowFilter(!showFilter)}
-        className="mb-2 px-4 py-1 bg-gray-800text-white rounded"
+        className="mb-2 px-4 py-1 bg-gray-800 text-white rounded"
       >
         {showFilter ? "Sembunyikan Filter" : "Tampilkan Filter"}
       </button>
@@ -92,7 +92,7 @@ export default function DatabaseOutlet() {
         <table className="min-w-full text-xs">
           <thead className="bg-gray-800 text-white sticky top-0 z-10">
             <tr>
-              <th className="p-2 text-left sticky left-0 bg-[#800000] z-20">AKSI</th>
+              <th className="p-2 text-left sticky left-0 bg-gray-800 z-20">AKSI</th>
               {visibleKeys.map((key) => (
                 <th key={key} className="p-2 text-left whitespace-nowrap">
                   {key.replace(/_/g, " ").toUpperCase()}
