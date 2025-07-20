@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   UserCircle,
   LogOut,
@@ -13,6 +13,8 @@ import UserPage from "./pages/UserPage";
 import EmployeePage from "./pages/EmployeePage";
 import LoginPage from "./pages/LoginPage";
 import DatabaseDona from './pages/DatabaseDona';
+import DatabaseOutlet from './pages/DatabaseOutlet';
+import DatabaseProductivity from './pages/DatabaseProductivity'; // ✅ BARU
 
 import "./index.css";
 
@@ -30,10 +32,7 @@ const App = () => {
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="fixed inset-y-0 left-0 z-50 bg-gradient-to-br from-[#800000] to-red-800 text-white shadow-2xl overflow-hidden"
         >
-          <Sidebar
-            collapsed={sidebarCollapsed}
-            setCollapsed={setSidebarCollapsed}
-          />
+          <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
         </motion.div>
 
         <MainContent sidebarCollapsed={sidebarCollapsed} />
@@ -53,6 +52,8 @@ const RequireAuth = ({ children }) => {
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const [openMenus, setOpenMenus] = useState({ masterData: true });
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const isMaster = currentUser?.role === "master";
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
@@ -60,7 +61,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
   return (
     <div className="p-3 flex flex-col h-full overflow-y-auto space-y-2">
-      {/* Tombol toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="text-white p-2 rounded hover:bg-red-700 transition mx-auto"
@@ -68,49 +68,46 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         <Menu />
       </button>
 
-      {/* Menu utama */}
       <nav className="space-y-2 mt-6">
-        <button
-          onClick={() => toggleMenu("masterData")}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 w-full ${
-            collapsed ? "justify-center" : ""
-          }`}
-        >
-          <i className="fas fa-database" />
-          {!collapsed && <span>Master Data</span>}
-        </button>
+        {isMaster && (
+          <>
+            <button
+              onClick={() => toggleMenu("masterData")}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 w-full ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <i className="fas fa-database" />
+              {!collapsed && <span>Master Data</span>}
+            </button>
 
-        {openMenus.masterData && (
-          <div className={`space-y-1 ${collapsed ? "pl-0" : "pl-4"}`}>
-            <Link
-              to="/"
-              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <UserCircle className="w-5 h-5" />
-              {!collapsed && <span>User Management</span>}
-            </Link>
-            <Link
-              to="/employees"
-              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <UserCircle className="w-5 h-5" />
-              {!collapsed && <span>Employee Management</span>}
-            </Link>
-               <Link
-              to="/dona"
-              className={`flex items-center gap-2 px-2 py-1 rounded hover:text-red-200 ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <UserCircle className="w-5 h-5" />
-              {!collapsed && <span>Database Dona</span>}
-            </Link>
-          </div>
+            {openMenus.masterData && (
+              <div className={`space-y-1 ${collapsed ? "pl-0" : "pl-4"}`}>
+                <Link to="/" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
+                  <UserCircle className="w-5 h-5" />
+                  {!collapsed && <span>User Management</span>}
+                </Link>
+                <Link to="/employees" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
+                  <UserCircle className="w-5 h-5" />
+                  {!collapsed && <span>Employee Management</span>}
+                </Link>
+                <Link to="/dona" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
+                  <UserCircle className="w-5 h-5" />
+                  {!collapsed && <span>Database Dona</span>}
+                </Link>
+                <Link to="/outlet" className="flex items-center gap-2 px-2 py-1 rounded hover:text-red-200">
+                  <UserCircle className="w-5 h-5" />
+                  {!collapsed && <span>Database Outlet</span>}
+                </Link>
+              </div>
+            )}
+          </>
         )}
+
+        <Link to="/productivity" className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-700">
+          <UserCircle className="w-5 h-5" />
+          {!collapsed && <span>Database Productivity</span>}
+        </Link>
       </nav>
     </div>
   );
@@ -165,27 +162,14 @@ const MainContent = ({ sidebarCollapsed }) => (
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-     <Routes>
-  <Route path="/login" element={<LoginPage />} />
-  <Route
-    path="/"
-    element={
-      <RequireAuth>
-        <UserPage />
-      </RequireAuth>
-    }
-  />
-  <Route
-    path="/employees"
-    element={
-      <RequireAuth>
-        <EmployeePage />
-      </RequireAuth>
-    }
-  />
-  
-<Route path="/dona" element={<DatabaseDona />} />
-  </Routes>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<RequireAuth><DatabaseProductivity/></RequireAuth>} />
+        <Route path="/employees" element={<RequireAuth><EmployeePage /></RequireAuth>} />
+        <Route path="/dona" element={<RequireAuth><DatabaseDona /></RequireAuth>} />
+        <Route path="/outlet" element={<RequireAuth><DatabaseOutlet /></RequireAuth>} />
+        <Route path="/productivity" element={<RequireAuth><DatabaseProductivity /></RequireAuth>} /> {/* ✅ BARU */}
+      </Routes>
     </motion.div>
   </main>
 );
