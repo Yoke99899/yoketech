@@ -180,115 +180,125 @@ export default function ProductivityPage() {
 
       {/* Form Pop-up */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl"
+  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="bg-white rounded-lg overflow-hidden shadow-xl w-full max-w-2xl"
+    >
+      {/* Header Gradasi */}
+      <div className="flex justify-between items-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+        <h3 className="text-lg font-semibold">{editId ? "Edit Data" : "Input Productivity"}</h3>
+        <button onClick={resetForm} className="text-white hover:text-gray-200">
+          <FaTimes />
+        </button>
+      </div>
+
+      {/* Form */}
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white">
+        <input
+          type="text"
+          placeholder="Nama SMD / Motoris"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.nama}
+          onChange={(e) => setForm({ ...form, nama: e.target.value })}
+        />
+        <DatePicker
+          selected={form.tanggal}
+          onChange={(date) => setForm({ ...form, tanggal: date })}
+          className="bg-gray-100 p-2 rounded w-full outline-none"
+          dateFormat="yyyy-MM-dd"
+        />
+        <input
+          type="text"
+          placeholder="Nama Pasar"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.pasar}
+          onChange={(e) => setForm({ ...form, pasar: e.target.value })}
+        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Outlet Name"
+            className="bg-gray-100 p-2 rounded flex-1 outline-none"
+            value={form.outlet_name}
+            readOnly
+            onClick={() => setShowPicker(true)}
+          />
+          <button
+            className="bg-blue-500 text-white px-3 rounded"
+            onClick={() => setShowPicker(true)}
           >
-            <h3 className="text-lg font-semibold mb-4">
-              {editId ? "Edit Data" : "Input Productivity"}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder="Nama SMD / Motoris"
-                className="p-2 border rounded"
-                value={form.nama}
-                onChange={(e) => setForm({ ...form, nama: e.target.value })}
-              />
-              <DatePicker
-                selected={form.tanggal}
-                onChange={(date) => setForm({ ...form, tanggal: date })}
-                className="p-2 border rounded w-full"
-                dateFormat="yyyy-MM-dd"
-              />
-              <input
-                type="text"
-                placeholder="Nama Pasar"
-                className="p-2 border rounded"
-                value={form.pasar}
-                onChange={(e) => setForm({ ...form, pasar: e.target.value })}
-              />
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Outlet Name"
-                  className="p-2 border rounded flex-1"
-                  value={form.outlet_name}
-                  readOnly
-                  onClick={() => setShowPicker(true)}
-                />
-                <button
-                  className="bg-blue-500 text-white px-2 py-1 rounded"
-                  onClick={() => setShowPicker(true)}
-                >
-                  Pilih
-                </button>
-              </div>
-              <input
-                type="text"
-                placeholder="Outlet ID"
-                className="p-2 border rounded"
-                value={form.outlet_id}
-                readOnly
-              />
-              <input
-                type="text"
-                placeholder="Category"
-                className="p-2 border rounded"
-                value={form.category}
-                readOnly
-              />
-              <input
-                type="text"
-                placeholder="Brand"
-                className="p-2 border rounded"
-                value={form.brand}
-                onChange={(e) => setForm({ ...form, brand: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Quantity"
-                className="p-2 border rounded"
-                value={form.quantity}
-                onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Total Rp"
-                className="p-2 border rounded"
-                value={form.total}
-                onChange={(e) => setForm({ ...form, total: e.target.value })}
-              />
-            </div>
-
-            {error && <p className="text-red-500 mt-2">{error}</p>}
-
-            <div className="mt-4 flex justify-end space-x-2">
-              <button onClick={resetForm} className="px-4 py-2 rounded border">
-                Batal
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="bg-green-600 text-white px-4 py-2 rounded"
-              >
-                <FaCheck className="inline mr-1" />
-                {editId ? "Update" : "Simpan"}
-              </button>
-            </div>
-          </motion.div>
+            Pilih
+          </button>
         </div>
-      )}
+        <input
+          type="text"
+          placeholder="Outlet ID"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.outlet_id}
+          readOnly
+        />
+        <input
+          type="text"
+          placeholder="Category"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.category}
+          readOnly
+        />
+        <input
+          type="text"
+          placeholder="Brand"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.brand}
+          onChange={(e) => setForm({ ...form, brand: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Quantity"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.quantity}
+          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Total Rp"
+          className="bg-gray-100 p-2 rounded outline-none"
+          value={form.total}
+          onChange={(e) => setForm({ ...form, total: e.target.value })}
+        />
+      </div>
 
-      {showPicker && (
+      {/* Error */}
+      {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+
+      {/* Footer Button */}
+      <div className="px-6 py-4 flex justify-end gap-2 bg-white border-t">
+        <button
+          onClick={resetForm}
+          className="px-4 py-2 rounded border hover:bg-gray-100"
+        >
+          Batal
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 font-semibold text-white rounded bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90"
+        >
+          <FaCheck className="inline mr-1" />
+          {editId ? "Update" : "Simpan"}
+        </button>
+      </div>
+    </motion.div>
+  </div>
+)}
+ {showPicker && (
         <OutletPicker
           onSelect={handleOutletSelect}
           onClose={() => setShowPicker(false)}
         />
       )}
 
-      {/* Dialog Konfirmasi */}
+ {/* Dialog Konfirmasi */}
       {confirmDialog && (
         <Dialog open={true} onClose={() => setConfirmDialog(null)} className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <motion.div
@@ -319,6 +329,7 @@ export default function ProductivityPage() {
           </motion.div>
         </Dialog>
       )}
+
     </div>
   );
 }
