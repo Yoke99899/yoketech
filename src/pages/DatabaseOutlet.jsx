@@ -18,8 +18,18 @@ export default function DatabaseOutlet() {
     const dataRef = ref(db, "outlet_data");
     onValue(dataRef, (snapshot) => {
       const data = snapshot.val() || {};
-      const list = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-      setDataList(list);
+      const list = Object.values(data).filter((item) => {
+        const name = item.outlet?.toLowerCase() || "";
+        const addr = item.address?.toLowerCase() || "";
+        return (
+          item.outlet &&
+          !name.includes("undintified") &&
+          !addr.includes("undintified")
+        );
+      });
+      setOutlets(list);
+      setFiltered(list);
+      setLoading(false);
     });
   }, []);
 
