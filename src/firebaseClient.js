@@ -1,6 +1,6 @@
 // src/firebaseClient.js
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, get, set, update, remove, onValue } from 'firebase/database';
+import { getDatabase, ref, get, set, update, remove, onValue, push} from 'firebase/database';
 import {
   getStorage,
   ref as storageRef,
@@ -38,6 +38,7 @@ export {
   update,
   remove,
   onValue,
+  push,
   storage,
   storageRef,
   uploadBytes,
