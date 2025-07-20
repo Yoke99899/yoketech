@@ -27,9 +27,7 @@ export default function DatabaseOutlet() {
           !addr.includes("undintified")
         );
       });
-      setOutlets(list);
-      setFiltered(list);
-      setLoading(false);
+      setDataList(list);
     });
   }, []);
 
