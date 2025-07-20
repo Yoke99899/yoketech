@@ -67,7 +67,7 @@ const RequireAuth = ({ children }) => {
 const Sidebar = ({ setCollapsed }) => {
   const [openMenus, setOpenMenus] = useState({ masterData: true });
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const isMaster = ["master", "admin", "Master Admin"].includes(currentUser?.role);
+  const isMaster = ["Master Admin", "admin", "Master Admin"].includes(currentUser?.role);
 
   const toggleMenu = (menu) => {
     setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
