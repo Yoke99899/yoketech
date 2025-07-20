@@ -57,12 +57,12 @@ export default function DatabaseOutlet() {
 
   return (
     <div className="p-4 text-xs max-w-[1600px] mx-auto">
-      <h2 className="text-xl font-bold mb-4 text-[#800000]">Database Outlet</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Database Outlet</h2>
 
       {/* Toggle Filter */}
       <button
         onClick={() => setShowFilter(!showFilter)}
-        className="mb-2 px-4 py-1 bg-[#800000] text-white rounded"
+        className="mb-2 px-4 py-1 bg-gray-800text-white rounded"
       >
         {showFilter ? "Sembunyikan Filter" : "Tampilkan Filter"}
       </button>
@@ -90,7 +90,7 @@ export default function DatabaseOutlet() {
       {/* Table */}
       <div className="overflow-auto max-h-[70vh] border rounded">
         <table className="min-w-full text-xs">
-          <thead className="bg-[#800000] text-white sticky top-0 z-10">
+          <thead className="bg-gray-800 text-white sticky top-0 z-10">
             <tr>
               <th className="p-2 text-left sticky left-0 bg-[#800000] z-20">AKSI</th>
               {visibleKeys.map((key) => (
