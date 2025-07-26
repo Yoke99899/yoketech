@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import ChannelTable from "./ChannelTable";
 import AddChannelPage from "./AddChannelPage";
 import EditChannelPage from "./EditChannelPage";
-import useChannelPage from "./useChannelPage";
+import UseChannelPage from "./UseChannelPage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
 
 export default function ChannelPage() {
-  const { channels, deleteChannel } = useChannelPage();
+  const { channels, deleteChannel } = UseChannelPage();
   const [editData, setEditData] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
