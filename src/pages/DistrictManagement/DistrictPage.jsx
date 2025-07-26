@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import DistrictTable from "./DistrictTable";
 import AddDistrictPage from "./AddDistrictPage";
 import EditDistrictPage from "./EditDistrictPage";
-import useDistrictPage from "./useDistrictPage";
+import UseDistrictPage from "./UseDistrictPage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
 
 export default function DistrictPage() {
-  const { districts, deleteDistrict } = useDistrictPage();
+  const { districts, deleteDistrict } = UseDistrictPage();
   const [editData, setEditData] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
