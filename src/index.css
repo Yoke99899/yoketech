@@ -10,3 +10,6 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
+body {
+  font-family: 'Inter', sans-serif;
+}
