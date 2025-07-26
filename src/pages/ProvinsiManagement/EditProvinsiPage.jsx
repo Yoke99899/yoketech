@@ -1,6 +1,6 @@
 import React from 'react';
 import ProvinsiForm from './ProvinsiForm';
-import UseProvinsiPage from './useProvinsiPage';
+import UseProvinsiPage from './UseProvinsiPage';
 
 export default function EditProvinsiPage({ data, onClose }) {
   const { updateProvinsi } = UseProvinsiPage();
