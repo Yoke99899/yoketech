@@ -1,6 +1,6 @@
 import React from 'react';
 import AccountForm from './AccountForm';
-import UseAccountPage from './useAccountPage';
+import UseAccountPage from './UseAccountPage';
 
 export default function EditAccountPage({ data, onClose }) {
   const { updateAccount } = UseAccountPage();
