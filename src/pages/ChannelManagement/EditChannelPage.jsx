@@ -1,6 +1,6 @@
 import React from 'react';
 import ChannelForm from './ChannelForm';
-import UseChannelPage from './useChannelPage';
+import UseChannelPage from './UseChannelPage';
 
 export default function EditChannelPage({ data, onClose }) {
   const { updateChannel } = UseChannelPage();
