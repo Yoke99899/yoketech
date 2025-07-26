@@ -1,6 +1,6 @@
 import React from 'react';
 import StoreForm from './StoreForm';
-import useStorePage from './useStorePage';
+import useStorePage from './UseStorePage';
 
 export default function AddStorePage({ onClose }) {
   const { addStore } = useStorePage();
