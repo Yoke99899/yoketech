@@ -1,9 +1,9 @@
 import React from 'react';
 import ProductForm from './ProductForm';
-import useProductPage from './useProductPage';
+import UseProductPage from './UseProductPage';
 
 export default function EditProductPage({ data, onClose }) {
-  const { updateProduct } = useProductPage();
+  const { updateProduct } = UseProductPage();
 
   return (
     <ProductForm
