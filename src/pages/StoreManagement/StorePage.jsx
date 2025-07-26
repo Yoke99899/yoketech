@@ -5,7 +5,7 @@ import AddStorePage from "./AddStorePage";
 import EditStorePage from "./EditStorePage";
 import UseStorePage from "./UseStorePage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
-import { exportStoresToExcel } from "./storeExport";
+import { exportStoresToExcel } from "./StoreExport";
 
 export default function StorePage() {
   const { stores, deleteStore } = UseStorePage();
