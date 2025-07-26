@@ -1,6 +1,6 @@
 import React from 'react';
 import DistrictForm from './DistrictForm';
-import UseDistrictPage from './useDistrictPage';
+import UseDistrictPage from './UseDistrictPage';
 
 export default function EditDistrictPage({ data, onClose }) {
   const { updateDistrict } = UseDistrictPage();
