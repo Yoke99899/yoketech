@@ -63,7 +63,7 @@ const handleConfirmDelete = async () => {
             <th className="p-2 border whitespace-nowrap sticky left-0 bg-gray-800 z-30 shadow-inner">
               Aksi
             </th>
-            <th className="p-2 border whitespace-nowrap sticky left-[75px] bg-gray-800 z-20 shadow-inner">
+            <th className="p-2 border whitespace-nowrap sticky left-[75px] bg-gray-800 z-10 shadow-inner">
               No
             </th>
             <th className="p-2 border whitespace-nowrap">Code</th>
@@ -93,7 +93,7 @@ const handleConfirmDelete = async () => {
           {data.map((prod, idx) => (
             <tr key={prod.id || idx} className="hover:bg-gray-50 text-xs">
               {/* Kolom Aksi (freeze kiri) */}
-              <td className="p-2 border sticky left-0 bg-white z-20 shadow-inner">
+              <td className="p-2 border sticky left-0 bg-white z-30 shadow-inner">
                 <div className="flex gap-1">
                   <button
                     onClick={() => onEdit(prod)}
@@ -122,7 +122,7 @@ const handleConfirmDelete = async () => {
               </td>
 
               {/* Kolom No (freeze kiri) */}
-              <td className="p-2 border text-center sticky left-0 bg-white z-10 shadow-inner">
+              <td className="p-2 border sticky left-0 bg-white z-20 shadow-inner">
                 {idx + 1}
               </td>
 
@@ -149,7 +149,7 @@ const handleConfirmDelete = async () => {
                   <img
                     src={prod.photo}
                     alt="Foto"
-                    className="w-10 h-10 object-cover mx-auto"
+                    className="w-16 h-16 object-cover mx-auto"
                   />
                 ) : (
                   "-"
