@@ -3,6 +3,7 @@ import Select from "react-select";
 import { ref, onValue } from "firebase/database";
 import { db } from "../../firebaseClient";
 import { uploadImageToCloudinary } from "../../utils/cloudinaryUtils";
+import { deleteImageFromCloudinary } from "../../utils/cloudinaryUtils";
 import { FaEdit, FaTrash, FaEyeSlash, FaEye } from "react-icons/fa";
 import { showToast } from "../../utils/toast"; // Pastikan path ini benar
 
@@ -147,6 +148,45 @@ export default function StoreForm({ initialData = {}, onSubmit, onCancel, title 
     </div>
   );
 
+//----------------------delete image setelah batal
+const imageFields = [
+  "photo"
+];
+
+const [initialImages] = useState(() =>
+  imageFields.reduce((acc, field) => {
+    acc[field] = initialData[field] || "";
+    return acc;
+  }, {})
+);
+
+const handleCancelWithImageCleanup = async () => {
+  for (const field of imageFields) {
+    const originalUrl = initialImages[field];
+    const currentUrl = formData[field];
+
+    if (currentUrl && currentUrl !== originalUrl) {
+      try {
+        const urlParts = currentUrl.split("/");
+        const fileWithExtension = urlParts[urlParts.length - 1];
+        const publicId = fileWithExtension.split(".")[0];
+        await deleteImageFromCloudinary(publicId);
+        console.log(`Berhasil hapus gambar: ${field}`);
+      } catch (err) {
+        console.error(`Gagal hapus gambar ${field}:`, err);
+      }
+    }
+  }
+
+  onCancel(); // keluar dari form/modal
+};
+
+
+
+
+//----------------------akhir delete image setelah batal
+
+
   return (
     <div className="bg-white p-4 rounded shadow w-full max-w-6xl mx-auto text-xs relative">
       <h2 className="text-lg font-semibold text-gray-900 mb-3 text-center">{title}</h2>
@@ -213,7 +253,7 @@ export default function StoreForm({ initialData = {}, onSubmit, onCancel, title 
         <div className="flex justify-end gap-2 mt-4 text-xs">
           <button
             type="button"
-            onClick={onCancel}
+            onClick={handleCancelWithImageCleanup}
             className="bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
           >
             Batal
