@@ -91,7 +91,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                         ["/stores", "Store Management", Store],
                         ["/products", "Product Management", Store],
                         ["/displays", "Display Management", Store],
-                        ["/dona", "Database Dona", FolderKanban],
+                        
                         ["/outlet", "Database Outlet", Store],
                       ].map(([path, label, Icon]) => (
                         <Link key={path} to={path} onClick={() => setCollapsed(true)} className={linkClasses(isActive(path))}>
