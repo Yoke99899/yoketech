@@ -107,6 +107,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             <Link to="/productivity" onClick={() => setCollapsed(true)} className={linkClasses(isActive("/productivity"))}>
               <LineChart className="w-4 h-4" /> Productivity
             </Link>
+		
+	    <Link to="/validasi" onClick={() => setCollapsed(true)} className={linkClasses(isActive("/validasi"))}>
+              <MapPin className="w-4 h-4" /> Validasi No Telp
+            </Link>
 
             <Link to="/checkin" onClick={() => setCollapsed(true)} className={linkClasses(isActive("/checkin"))}>
               <MapPin className="w-4 h-4" /> Check-in Outlet
