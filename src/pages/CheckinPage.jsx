@@ -1,6 +1,15 @@
+// File: CheckinPage.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { db, ref, onValue, push, set, update } from "../firebaseClient";
-import { FaSpinner, FaMapMarkerAlt, FaBuilding, FaBoxes, FaMoneyBillWave, FaListUl, FaCheck } from "react-icons/fa";
+import {
+  FaSpinner,
+  FaMapMarkerAlt,
+  FaBuilding,
+  FaBoxes,
+  FaMoneyBillWave,
+  FaListUl,
+  FaCheck,
+} from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -37,7 +46,7 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
-export default function Checkin() {
+export default function CheckinPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [outlets, setOutlets] = useState([]);
   const [productivity, setProductivity] = useState([]);
@@ -45,7 +54,7 @@ export default function Checkin() {
   const [checkinData, setCheckinData] = useState(null);
   const [timer, setTimer] = useState(0);
   const [selectedOutletId, setSelectedOutletId] = useState(null);
-  const [radius, setRadius] = useState(0.5);
+  const [radius] = useState(0.5);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterAccount, setFilterAccount] = useState("");
   const [searchName, setSearchName] = useState("");
@@ -56,15 +65,12 @@ export default function Checkin() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      (pos) =>
         setUserLocation({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
-        });
-      },
-      (err) => {
-        console.error("Location error:", err);
-      }
+        }),
+      (err) => console.error("Location error:", err)
     );
   }, []);
 
@@ -73,31 +79,13 @@ export default function Checkin() {
       const data = snapshot.val() || {};
       setOutlets(Object.values(data));
     });
+
     onValue(ref(db, "productivity_data"), (snapshot) => {
       const data = snapshot.val() || {};
       setProductivity(Object.values(data));
       setLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    if (selectedOutletId && rowRefs.current[selectedOutletId]) {
-      rowRefs.current[selectedOutletId].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [selectedOutletId]);
-
-  useEffect(() => {
-    let interval;
-    if (checkinData) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [checkinData]);
 
   useEffect(() => {
     const stateRef = ref(db, `state_checkin/${userId}`);
@@ -108,7 +96,6 @@ export default function Checkin() {
         const startTime = new Date(timestamp);
         const now = new Date();
         const elapsed = Math.floor((now - startTime) / 1000);
-
         setCheckinData({
           outlet_id,
           outlet_name,
@@ -121,15 +108,20 @@ export default function Checkin() {
     });
   }, []);
 
-  const formatTime = (sec) => {
-    const m = Math.floor(sec / 60).toString().padStart(2, "0");
-    const s = (sec % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
+  useEffect(() => {
+    let interval;
+    if (checkinData) {
+      interval = setInterval(() => setTimer((prev) => prev + 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [checkinData]);
+
+  const formatTime = (sec) =>
+    `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
 
   const handleCheckin = (outlet) => {
     const now = new Date();
-    const checkinPayload = {
+    const payload = {
       outlet_id: outlet.outlet_id,
       outlet_name: outlet.outlet,
       date_checkin: now.toISOString().split("T")[0],
@@ -139,7 +131,7 @@ export default function Checkin() {
     };
 
     const newRef = push(ref(db, "Attendance_data"));
-    set(newRef, checkinPayload);
+    set(newRef, payload);
 
     set(ref(db, `state_checkin/${userId}`), {
       state: "checked-in",
@@ -149,10 +141,7 @@ export default function Checkin() {
       firebaseId: newRef.key,
     });
 
-    setCheckinData({
-      ...checkinPayload,
-      firebaseId: newRef.key,
-    });
+    setCheckinData({ ...payload, firebaseId: newRef.key });
     setTimer(0);
   };
 
@@ -164,28 +153,12 @@ export default function Checkin() {
         time_checkout: now.toTimeString().split(" ")[0],
       });
     }
-
     set(ref(db, `state_checkin/${userId}`), {
       state: "checked-out",
       timestamp: now.toISOString(),
     });
-
     setCheckinData(null);
     setTimer(0);
-  };
-
-  const getRowHighlightClass = (outlet) => {
-    if (selectedOutletId !== outlet.outlet_id) return "";
-    switch (outlet.category?.toLowerCase()) {
-      case "retail":
-        return "bg-green-100 text-green-800";
-      case "enduser":
-        return "bg-blue-100 text-blue-800";
-      case "umkm":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-yellow-100 text-yellow-800";
-    }
   };
 
   const uniqueCategories = [...new Set(outlets.map((o) => o.category).filter(Boolean))];
@@ -196,11 +169,9 @@ export default function Checkin() {
       const distance = userLocation
         ? haversineDistance(userLocation.lat, userLocation.lng, outlet.latitude, outlet.longitude)
         : null;
-
       const related = productivity.filter((p) => p.outlet_id === outlet.outlet_id);
       const totalQty = related.reduce((sum, r) => sum + (Number(r.quantity) || 0), 0);
       const totalVal = related.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
-
       return { ...outlet, distance, totalQty, totalVal };
     })
     .filter((o) => {
@@ -214,7 +185,7 @@ export default function Checkin() {
     .sort((a, b) => a.distance - b.distance);
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="px-4 py-6 max-w-screen-md mx-auto bg-gray-50 min-h-screen">
       {loading || !userLocation ? (
         <div className="flex justify-center items-center h-64">
           <FaSpinner className="animate-spin mr-2" />
@@ -223,22 +194,22 @@ export default function Checkin() {
       ) : (
         <>
           {/* Filter */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            <input type="text" placeholder="Search Outlet Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} className="border px-2 py-1 rounded" />
-            <input type="text" placeholder="Search Address" value={searchAddress} onChange={(e) => setSearchAddress(e.target.value)} className="border px-2 py-1 rounded" />
-            <select value={filterAccount} onChange={(e) => setFilterAccount(e.target.value)} className="border px-2 py-1 rounded">
-              <option value="">Dropdown Account</option>
+          <div className="grid grid-cols-1 gap-2 mb-4 sm:grid-cols-2">
+            <input type="text" placeholder="Search Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} className="border p-2 rounded-md w-full" />
+            <input type="text" placeholder="Search Address" value={searchAddress} onChange={(e) => setSearchAddress(e.target.value)} className="border p-2 rounded-md w-full" />
+            <select value={filterAccount} onChange={(e) => setFilterAccount(e.target.value)} className="border p-2 rounded-md w-full">
+              <option value="">Account</option>
               {uniqueAccounts.map((acc) => <option key={acc}>{acc}</option>)}
             </select>
-            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="border px-2 py-1 rounded">
-              <option value="">Dropdown Category</option>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="border p-2 rounded-md w-full">
+              <option value="">Category</option>
               {uniqueCategories.map((cat) => <option key={cat}>{cat}</option>)}
             </select>
           </div>
 
           {/* Map */}
-          <div className="mb-4 border rounded shadow overflow-hidden">
-            <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={16} style={{ height: "300px", width: "100%" }}>
+          <div className="rounded-xl overflow-hidden mb-6 border shadow">
+            <MapContainer center={[userLocation.lat, userLocation.lng]} zoom={16} style={{ height: 300, width: "100%" }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <Marker position={[userLocation.lat, userLocation.lng]} icon={greenIcon}>
                 <Popup>Lokasi Anda</Popup>
@@ -258,61 +229,54 @@ export default function Checkin() {
             </MapContainer>
           </div>
 
-          {/* Checkin or Outlet Card List */}
+          {/* Info / Cards */}
           {checkinData ? (
-            <div className="text-center p-4 border rounded shadow bg-white">
-              <h2 className="text-lg font-bold text-green-600 mb-2">Checked In</h2>
-              <p className="text-sm">Outlet: <strong>{checkinData.outlet_name}</strong></p>
-              <p className="text-sm">Check-in Time: {checkinData.time_checkin}</p>
-              <p className="text-sm mb-2">Timer: <span className="font-mono">{formatTime(timer)}</span></p>
-              <button onClick={handleCheckout} className="bg-red-500 text-white px-4 py-2 rounded shadow">Check Out</button>
+            <div className="bg-white rounded-xl shadow p-4 text-center">
+              <h2 className="text-green-600 text-xl font-semibold mb-1">Sedang Check-in</h2>
+              <p className="text-gray-700 text-sm">Outlet: <strong>{checkinData.outlet_name}</strong></p>
+              <p className="text-gray-700 text-sm">Jam: {checkinData.time_checkin}</p>
+              <p className="text-gray-700 text-sm mb-3">Durasi: <span className="font-mono">{formatTime(timer)}</span></p>
+              <button onClick={handleCheckout} className="bg-red-500 text-white px-4 py-2 rounded-full shadow-md">
+                Check Out
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[70vh] overflow-auto border-t pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[65vh] overflow-auto">
               {enhancedOutlets.map((outlet) => (
                 <div
                   key={outlet.outlet_id}
                   ref={(el) => (rowRefs.current[outlet.outlet_id] = el)}
-                  className={`border rounded-xl p-4 shadow transition-all hover:shadow-lg cursor-pointer ${getRowHighlightClass(outlet)}`}
+                  className="bg-white rounded-xl p-4 shadow flex flex-col justify-between"
                   onClick={() => setSelectedOutletId(outlet.outlet_id)}
                 >
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                    <FaBuilding className="text-blue-600" />
-                    {outlet.outlet}
-                  </h3>
-                  <p className="text-sm flex items-center gap-2 text-gray-600 mb-1">
-                    <FaListUl className="text-gray-400" />
-                    {outlet.category || "-"} / {outlet.account || "-"}
-                  </p>
-                  <p className="text-sm flex items-center gap-2 text-gray-600 mb-1">
-                    <FaBoxes className="text-green-600" />
-                    Qty: {outlet.totalQty}
-                  </p>
-                  <p className="text-sm flex items-center gap-2 text-gray-600 mb-1">
-                    <FaMoneyBillWave className="text-green-700" />
-                    Value: Rp {outlet.totalVal.toLocaleString()}
-                  </p>
-                  <p className="text-sm flex items-center gap-2 text-gray-600 mb-2">
-                    <FaMapMarkerAlt className="text-red-500" />
-                    {outlet.distance ? `${(outlet.distance * 1000).toFixed(0)} m` : "-"}
-                  </p>
+                  <div>
+                    <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                      <FaBuilding className="text-blue-500" /> {outlet.outlet}
+                    </h3>
+                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-1">
+                      <FaListUl className="text-gray-400" /> {outlet.category || "-"} / {outlet.account || "-"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-1">
+                      <FaBoxes className="text-green-600" /> Qty: {outlet.totalQty}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-1">
+                      <FaMoneyBillWave className="text-green-700" /> Rp {outlet.totalVal.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                      <FaMapMarkerAlt className="text-red-500" /> {outlet.distance ? `${(outlet.distance * 1000).toFixed(0)} m` : "-"}
+                    </p>
+                  </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleCheckin(outlet);
                     }}
-                    className="mt-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded flex items-center gap-2 w-full justify-center"
+                    className="mt-2 bg-blue-600 text-white py-2 rounded-full shadow-md flex items-center justify-center gap-2"
                   >
-                    <FaCheck />
-                    Check In
+                    <FaCheck /> Check In
                   </button>
                 </div>
               ))}
-              {enhancedOutlets.length === 0 && (
-                <div className="text-center col-span-full text-gray-500">
-                  Tidak ada outlet yang sesuai filter
-                </div>
-              )}
             </div>
           )}
         </>
