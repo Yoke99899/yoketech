@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ValidasiTable from "./ValidasiTable";
 import AddValidasiPage from "./AddValidasiPage";
 import EditValidasiPage from "./EditValidasiPage";
-import useValidasiPage from "./useValidasiPage";
+import useValidasiPage from "./UseValidasiPage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
 
 export default function ValidasiPage() {
