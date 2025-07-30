@@ -68,8 +68,8 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
 		<td className="p-2 border">{validasis.address}</td>
 		<td className="p-2 border">{validasis.district}</td>
 		<td className="p-2 border">{validasis.owner}</td>
-		<td className="p-2 border">{validasis.no_telp}</td>
-		<td className="p-2 border">{validasis.no_telp_valid}</td>
+		<td className="p-2 border">{validasis.telp}</td>
+		<td className="p-2 border">{validasis.input_no_valid}</td>
 		<td className="p-2 border">{validasis.reason_nomor}</td>
 		<td className="p-2 border">{validasis.respon}</td>	
             
