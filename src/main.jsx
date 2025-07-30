@@ -20,6 +20,7 @@ import CategoryPage from "./pages/CategoryManagement/CategoryPage";
 import StorePage from "./pages/StoreManagement/StorePage";
 import ProductPage from "./pages/ProductManagement/ProductPage";
 import DisplayPage from "./pages/DisplayManagement/DisplayPage";
+import ValidasiPage from "./pages/ValidasiManagement/ValidasiPage";
 import LoginPage from "./pages/LoginPage";
 import DatabaseDona from "./pages/DatabaseDona";
 import DatabaseOutlet from "./pages/DatabaseOutlet";
@@ -73,6 +74,7 @@ const App = () => {
               <Route path="/stores" element={<RequireAuth><StorePage /></RequireAuth>} />
               <Route path="/products" element={<RequireAuth><ProductPage /></RequireAuth>} />
               <Route path="/displays" element={<RequireAuth><DisplayPage /></RequireAuth>} />
+	      <Route path="/validasi" element={<RequireAuth><ValidasiPage /></RequireAuth>} />
               <Route path="/dona" element={<RequireAuth><DatabaseDona /></RequireAuth>} />
               <Route path="/outlet" element={<RequireAuth><DatabaseOutlet /></RequireAuth>} />
               <Route path="/productivity" element={<RequireAuth><DatabaseProductivity /></RequireAuth>} />
