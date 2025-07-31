@@ -5,7 +5,7 @@ import AddValidasiPage from "./AddValidasiPage";
 import EditValidasiPage from "./EditValidasiPage";
 import useValidasiPage from "./UseValidasiPage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
-import { exportValidasissToExcel } from "./ValidasiExport";
+import { exportValidasisToExcel } from "./ValidasiExport";
 
 export default function ValidasiPage() {
   const { validasis, deleteValidasi } = useValidasiPage();
