@@ -5,6 +5,7 @@ import AddValidasiPage from "./AddValidasiPage";
 import EditValidasiPage from "./EditValidasiPage";
 import useValidasiPage from "./UseValidasiPage";
 import { FaPlus, FaUpload, FaDownload, FaEye } from "react-icons/fa";
+import { exportValidasissToExcel } from "./ValidasiExport";
 
 export default function ValidasiPage() {
   const { validasis, deleteValidasi } = useValidasiPage();
@@ -137,7 +138,7 @@ export default function ValidasiPage() {
             </div>
 
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-2 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 text-sm">
+              <button onClick={exportValidasisToExcel} className="flex items-center gap-2 px-2 py-2 bg-indigo-600 text-white rounded shadow hover:bg-indigo-700 text-sm">
                 <FaDownload /> Download
               </button>
               <button className="flex items-center gap-2 px-2 py-1 bg-teal-600 text-white rounded shadow hover:bg-teal-700 text-sm">
