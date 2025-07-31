@@ -25,7 +25,7 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     <thead className="bg-gray-800 text-white sticky top-0 z-50">
           <tr>
 		<th className="p-2 border whitespace-nowrap sticky left-0 z-30 bg-gray-800">Aksi</th>
-    <th className="p-2 border whitespace-nowrap sticky left-[100px] z-20 bg-gray-800">No</th>
+    <th className="p-2 border whitespace-nowrap bg-gray-800">No</th>
                 <th className="p-2 border whitespace-nowrap">Frontliner</th>
 		<th className="p-2 border whitespace-nowrap">Outlet ID</th>
 		<th className="p-2 border whitespace-nowrap">Outlet Name</th>
