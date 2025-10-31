@@ -95,7 +95,13 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
 
               <td className="p-2 border">{validasis.respon}</td>
               <td className="p-2 border">{validasis.transaksi}</td>
-              <td className="p-2 border">{validasis.tgl_transaksi}</td>
+              <td className="p-2 border">
+              {new Date(validasis.tgl_transaksi).toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
+</td>
             </tr>
           ))}
         </tbody>
@@ -131,6 +137,7 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     </div>
   );
 }
+
 
 
 
