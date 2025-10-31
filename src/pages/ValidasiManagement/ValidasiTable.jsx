@@ -28,7 +28,7 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
       return "bg-green-100 text-green-800 font-semibold text-center";
     if (r === "belum di respon")
       return "bg-orange-100 text-orange-800 font-semibold text-center";
-    return "bg-pink-100 text-pink-800 font-semibold text-center";
+    return "bg-red-800 text-white font-semibold text-center";
   };
 
   return (
@@ -160,3 +160,4 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     </div>
   );
 }
+
