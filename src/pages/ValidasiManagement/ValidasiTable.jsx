@@ -25,10 +25,12 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     const r = respon.toLowerCase();
 
     if (r === "ok")
-      return "bg-green-100 text-green-800 font-semibold text-center";
+      return "bg-green-100 text-green-800 text-center";
     if (r === "belum di respon")
-      return "bg-orange-100 text-orange-800 font-semibold text-center";
-    return "bg-red-800 text-white font-semibold text-center";
+      return "bg-orange-100 text-orange-800 text-center";
+   if (r === "Nomor Double")
+      return "bg-amber-100 text-amber-800  text-center"; 
+    return "bg-red-100 text-red-800 text-center";
   };
 
   return (
@@ -160,4 +162,5 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     </div>
   );
 }
+
 
