@@ -73,10 +73,9 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
               <td className="p-2 border">{validasis.owner}</td>
               <td className="p-2 border">{validasis.telp}</td>
               <td className="p-2 border">{validasis.input_no_valid}</td>
-              <td className="p-2 border">{validasis.reason_nomor}</td>
-              <td className="p-2 border">{validasis.respon}</td>
-              <td className="p-2 border">{validasis.transaksi}</td>
-              <td className="p-2 border">{validasis.tgl_transaksi}</td>
+             
+              
+              
 
               {/* Reason Nomor jadi hyperlink WhatsApp */}
               <td className="p-2 border text-blue-600 underline">
@@ -95,6 +94,8 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
               </td>
 
               <td className="p-2 border">{validasis.respon}</td>
+              <td className="p-2 border">{validasis.transaksi}</td>
+              <td className="p-2 border">{validasis.tgl_transaksi}</td>
             </tr>
           ))}
         </tbody>
@@ -130,5 +131,6 @@ export default function ValidasiTable({ data, onEdit, onDelete }) {
     </div>
   );
 }
+
 
 
